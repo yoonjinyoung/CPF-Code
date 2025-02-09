@@ -1,10 +1,10 @@
 *
 **|=========================================|
-**|	    ####	CPF	v1.6	####			
-**|		>>>	RLMS							
-**|		>>	Harmonize variables 			
+**|	    ####	CPF	v1.5	####			|
+**|		>>>	RLMS							|
+**|		>>	Harmonize variables 			|
 **|-----------------------------------------|
-**|		Konrad Turek 	| 	2024			
+**|		Konrad Turek 	| 	2023			|
 **|=========================================|
 * 
 
@@ -33,10 +33,10 @@ lab def yesno 0 "[0] No" 1 "[1] Yes" ///
 * intyear 
 * intmonth
 * wave 
-rename  IDIND pid
-rename  YEAR wavey
-rename  INT_Y  intyear
-recode H7_2 (13/max=-1), gen(intmonth)
+rename  idind pid
+rename  year wavey
+rename  int_y  intyear
+recode h7_2 (13/max=-1), gen(intmonth)
 
 egen wave = group(wavey)
 
@@ -47,7 +47,7 @@ sort pid wave
 bysort pid: egen wave1st = min(wave)
 replace wave1st=1 if wave==1
 
-gen respstat= H4_1 
+gen respstat= h4_1 
 	lab def respstat 	1 "Interviewed" 					///
 						2 "Not interviewed (has values)" 	///
 						3 "Not interviewed (no values)"
@@ -66,12 +66,12 @@ replace respstat=1 if respstat==. & wave==1
 ** Demographic
 **--------------------------------------
 * age
-recode AGE (999/max=.)
-rename AGE age
+recode age (999/max=.)
+rename age age
 
 * Birth year
 
-gen yborn=H6
+gen yborn=h6
 recode yborn (9990/max=-1) 
 	lab var yborn "Birth year" 
 
@@ -113,7 +113,7 @@ recode yborn (9990/max=-1)
 	
 	
 * Gender
-recode H5 (1=0) (2=1), gen(female)
+recode h5 (1=0) (2=1), gen(female)
 	lab def female 0 "Male" 1 "Female" 
 	lab val female female 
 	lab var female "Gender" 
@@ -122,7 +122,7 @@ recode H5 (1=0) (2=1), gen(female)
 ** Place of living (e.g. size/rural)
 **--------------------------------------
 * place
-recode STATUS (1 2 3=1) (4=2), gen (place)
+recode status (1 2 3=1) (4=2), gen (place)
 
 	lab var place "Place of living"
 	lab def place 1 "city" 2 "rural area"
@@ -147,13 +147,13 @@ recode STATUS (1 2 3=1) (4=2), gen (place)
 //            5 Vocational secondary education Diploma
 //            6 Higher education Diploma and more
 
-recode EDUC (0/13=1) (14/18 =2) (19/23=3) (999/max .=-1), gen(edu3)
+recode educ (0/13=1) (14/18 =2) (19/23=3) (999/max .=-1), gen(edu3)
 	lab def edu3  1 "Low" 2 "Medium" 3 "High" // 2 incl Vocational
 	lab val edu3 edu3
 	lab var edu3 "Education: 3 levels"
 	
 *** edu4 
-recode EDUC (0/6=1) (7/13=2) (14/18=3) (19/23=4) (999/max .=-1), gen(edu4)
+recode educ (0/6=1) (7/13=2) (14/18=3) (19/23=4) (999/max .=-1), gen(edu4)
 
 	lab def edu4  1 "[0-1] Primary" 2 "[2] Secondary lower" ///
 				  3 "[3-4] Secondary upper" 4 "[5-8] Tertiary" 
@@ -161,7 +161,7 @@ recode EDUC (0/6=1) (7/13=2) (14/18=3) (19/23=4) (999/max .=-1), gen(edu4)
 	lab var edu4 "Education: 4 levels"
 	
 *** edu5
-recode EDUC (0/6=1) (7/13=2) (14/18=3) (19/20=4) (21/23=5) (999/max .=-1), gen(edu5)
+recode educ (0/6=1) (7/13=2) (14/18=3) (19/20=4) (21/23=5) (999/max .=-1), gen(edu5)
 
 	lab def edu5  1 "[0-1] Primary" 2 "[2] Secondary lower" ///
 				  3 "[3-4] Secondary upper" ///
@@ -186,7 +186,7 @@ recode EDUC (0/6=1) (7/13=2) (14/18=3) (19/20=4) (21/23=5) (999/max .=-1), gen(e
 * marstat
 // alternative: J72_17 and J322  - more-less fits marst
 
-recode MARST (2 3 7=1)(1=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(marstat5)
+recode marst (2 3 7=1)(1=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(marstat5)
 
 	lab var marstat5 "Primary partnership status [5]"
 	lab def marstat5				///
@@ -203,7 +203,7 @@ recode MARST (2 3 7=1)(1=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(marstat5)
 ** Formal marital status 	 
 **--------------------------------------
 
-recode MARST (2 7=1)(1 3=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(mlstat5)
+recode marst (2 7=1)(1 3=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(mlstat5)
 
 
 	lab var mlstat5 "Formal marital status [5]"
@@ -225,9 +225,9 @@ recode MARST (2 7=1)(1 3=2)(4=4)(5=3)(6=5) (999/max .=-1), gen(mlstat5)
 * - J324 only for w14+
 
 recode mlstat5 (1=1)(2/5=0) , gen(livpart)
-	replace livpart=1 if (J324==1|J324==2) 
-	replace livpart=0 if (J324==3) 
-	replace livpart=0 if NFM==1
+	replace livpart=1 if (j324==1|j324==2) 
+	replace livpart=0 if (j324==3) 
+	replace livpart=0 if nfm==1
 				
 // 		lab var haspart "Has a partner"
 		lab var livpart "Living together with partner"
@@ -277,7 +277,7 @@ recode mlstat5 (1=1)(2/5=0) , gen(livpart)
 // 		lab val csing yesno
 								
 *** Never married 
-recode MARST (1=1)(2/7=0) (999/max .=-1), gen(nvmarr)
+recode marst (1=1)(2/7=0) (999/max .=-1), gen(nvmarr)
 
 		lab var nvmarr "Never married"
 		lab val nvmarr yesno						
@@ -316,10 +316,10 @@ recode mlstat5 (5=1) (1/4=0), gen(separ)
 ** Children  
 **--------------------------------------
 *  
-recode J72_171 (2=0) (9999/max=-1), gen(kids_any)	// 2004+
+recode j72_171 (2=0) (9999/max=-1), gen(kids_any)	// 2004+
 //  (N1_1==1 | N1_2==1)  - asked <2004 but on limied sample of women 
 
-recode J72_172 (9999/max=-1), gen(kidsn_all)	// 2004+
+recode j72_172 (9999/max=-1), gen(kidsn_all)	// 2004+
 replace kidsn_all=0 if kids_any==0
 // recode J72_173 (9999/max=-1), gen(kidsn_17)	// 2004+
 // recode J72_173 (9999/max=-1), gen(kidsn_hh17)	// 2004+
@@ -330,13 +330,15 @@ replace kidsn_all=0 if kids_any==0
 	lab var kids_any  "Has children"
 	lab val kids_any   yesno
 	lab var kidsn_all  "Number Of Children Ever Had" 
-
+//  	lab var kidsn_17   "Number Of Own Children 0-17 (any children)" 
+// 	lab var kidsn_15   "Number Of Children <15 y.o." 
+//	lab var kidsn_hh17   "Number of Children in HH"
 
 *** New in CPF 1.52
 
 forvalue i=1/24 {
-recode B`i'_5 (min/0=.)(2090/max=.)
-gen hhage`i' = intyear - B`i'_5
+recode b`i'_5 (min/0=.)(2090/max=.)
+gen hhage`i' = intyear - b`i'_5
 gen tempa`i'=hhage`i' <=2
 gen tempb`i'=hhage`i' <=4  
 gen tempc`i'=hhage`i' >=3 & hhage`i'<=4  
@@ -345,8 +347,8 @@ gen tempe`i'=hhage`i' <=17
 }
 
 egen kidsn_hh_02=rowtotal(tempa*)
-egen kidsn_hh_04=rowtotal(tempb*)
-egen kidsn_hh_34=rowtotal(tempc*)
+egen kidsn_hh_34=rowtotal(tempb*)
+egen kidsn_hh_04=rowtotal(tempc*)
 egen kidsn_hh_510=rowtotal(tempd*)
 egen kidsn_hh17=rowtotal(tempe*)
 egen youngest_hh= rowmin(hhage*) 
@@ -369,7 +371,7 @@ recode kidsn_hh_04 (0=0)(1/20=1), gen(kids_hh_04)
 **--------------------------------------
 ** People in HH 
 **--------------------------------------
-	clonevar nphh=NFM
+	clonevar nphh=nfm
 	
 	lab var nphh   "Number of People in HH" 
 	
@@ -401,7 +403,7 @@ drop hhage*
 **--------------------------------------
 * work_py  work_d
 
-recode J1 (1=1) (2/5=0) (999/max=-1), gen(work_d)
+recode j1 (1=1) (2/5=0) (999/max=-1), gen(work_d)
 
 	*lab var work_py "Working: last year (based on hours)"	
 	lab var work_d "Working: currently (based on selfrep)"
@@ -413,22 +415,22 @@ recode J1 (1=1) (2/5=0) (999/max=-1), gen(work_d)
 **--------------------------------------
 * emplst5
 gen emplst5=.
-replace emplst5=4 if ((J1==4 | J1==5) & J73==2) | (J90==7 | J90==9)
+replace emplst5=4 if ((j1==4 | j1==5) & j73==2) | (j90==7 | j90==9)
 
-replace emplst5=3 if J1==5 & (J73==1 | J90==4 | J90==3) & age>=50
+replace emplst5=3 if j1==5 & (j73==1 | j90==4 | j90==3) & age>=50
 
-replace emplst5=5 if J90==15 | J90==16 | J90==1 | J90==2
+replace emplst5=5 if j90==15 | j90==16 | j90==1 | j90==2
 
-replace emplst5=2 if (J1==4 | J1==5) & ((J82==1) | (J81==1 & J90==8))
-replace emplst5=2 if (J1==4 | J1==5) & J90==8   
+replace emplst5=2 if (j1==4 | j1==5) & ((j82==1) | (j81==1 & j90==8))
+replace emplst5=2 if (j1==4 | j1==5) & j90==8   
  
-replace emplst5=1 if J1<=3 // incl. mater.leave and paid leave 
-replace emplst5=1 if (J90==10 & J1==1) | J90==11 | J90==12 | J90==13
+replace emplst5=1 if j1<=3 // incl. mater.leave and paid leave 
+replace emplst5=1 if (j90==10 & j1==1) | j90==11 | j90==12 | j90==13
 
-replace emplst5=-1 if J1>999 & J90>999 & J1<. & J90<.
-	recode J90(1 2 15 16=5) (3 7 9=4) (4=3) (8=2) (5 6 10/13=1) (999/max=-1), gen(temp_J90)
-replace emplst5=temp_J90 if emplst5==. 
-	drop temp_J90
+replace emplst5=-1 if j1>999 & j90>999 & j1<. & j90<.
+	recode j90(1 2 15 16=5) (3 7 9=4) (4=3) (8=2) (5 6 10/13=1) (999/max=-1), gen(temp_j90)
+replace emplst5=temp_j90 if emplst5==. 
+	drop temp_j90
 
 	lab def emplst5	///
 			1 "Employed" 			/// including leaves
@@ -442,7 +444,7 @@ replace emplst5=temp_J90 if emplst5==.
 
 * emplst6
 gen emplst6=emplst5
-replace emplst6=6 if inlist(J90, 5, 6)
+replace emplst6=6 if inlist(j90, 5, 6)
 
 	lab def emplst6	///
 			1 "Employed" 			/// including leaves
@@ -465,7 +467,7 @@ replace emplst6=6 if inlist(J90, 5, 6)
  
 * 
 
-clonevar isco08_4=J2COD08
+clonevar isco08_4=j2cod08
 recode isco08_4 (10000/max=.)
 
 
@@ -581,7 +583,7 @@ lab def isco_2															///
 * J4_1
 
  * Major groups 
-recode J4_1 (1/6 8 16 23 24=1)(7 14 15 17/20 25 27/31=2)(9/13 21/22 26 32=3) ///
+recode j4_1 (1/6 8 16 23 24=1)(7 14 15 17/20 25 27/31=2)(9/13 21/22 26 32=3) ///
 			(99999996/max=-1) , gen(indust1)
 		
 			
@@ -596,7 +598,7 @@ lab def indust1											///
 	lab var indust1 "Industry (major groups)" 
 	
 * Submajor groups 
-recode J4_1 (8 24 28=1)(16=2)(4 5=3)(1 3 23=4)(2 6=5) ///
+recode j4_1 (8 24 28=1)(16=2)(4 5=3)(1 3 23=4)(2 6=5) ///
 			(14 19=6)(7 30=7)(15=8)(29 17 18 27 31 9 10 12 11 20  25 26=9)	///
 			( 13 21 22 32 99999996=10) (99999997/max=-1), gen(indust2)
 
@@ -619,7 +621,7 @@ lab def indust2						///
 	lab var indust2 "Industry (submajor groups/1 dig)" 
 	
 * Minor groups 
-recode J4_1 (8 24 28=1) (4 5=3)(1 3 23=4)(16=5) ///
+recode j4_1 (8 24 28=1) (4 5=3)(1 3 23=4)(16=5) ///
 			(2 6=6)(14 19=7)(29=8)(7 30=9)(15=10) ///
 			(17 18 27 31=11)(9 13 21=12)(10=13)(12=14)(11 20 22 25 26 32=15) ///
 			(  99999996 / 99999999=-1) , gen(indust3)
@@ -654,7 +656,7 @@ lab def indust3											///
 ** Public sector  
 **--------------------------------------
 //   J23 - Government  
-recode J23 (2=0) (999/max=-1), gen(public)
+recode j23 (2=0) (999/max=-1), gen(public)
 	lab val public yesno
 	lab var public "Public sector"
 
@@ -662,7 +664,7 @@ recode J23 (2=0) (999/max=-1), gen(public)
 ** Size of organization	 
 **--------------------------------------
 *size 
-clonevar size=J13
+clonevar size=j13
 recode size (99999990/max=-1)
 
 recode size (1/19=1) (20/199=2) (200/1999=3) (2000/max=4), gen(size4)
@@ -714,18 +716,18 @@ recode size (1/9=1) (10/49=2) (50/99=3) (100/499=4) (500/max=5), gen(size5b)
 
 * per day
 gen whday=.
-replace whday = J6_1 if wavey>=1995 & wavey<=2000
-replace whday = J6_1A + (J6_1B/60) if wavey>=2001 & J6_1A <9999
+replace whday = j6_1 if wavey>=1995 & wavey<=2000
+replace whday = j6_1a + (j6_1b/60) if wavey>=2001 & j6_1a <9999
 replace whday=-1 if whday>999 & whday<.
 
 * per week 
-gen whweek= J6_2 
-replace whweek= whweek+ J36_2 if J36_2<9999
+gen whweek= j6_2 
+replace whweek= whweek+ j36_2 if j36_2<9999
 replace whweek=-1 if whweek>999 & whweek<.
 
 * per month 
-gen whmonth= J8
-replace whmonth= whmonth+ J38 if J38<9999
+gen whmonth= j8
+replace whmonth= whmonth+ j38 if j38<9999
 replace whmonth=-1 if whmonth>9999 & whmonth<.
 
 		/* For cleaning
@@ -767,7 +769,7 @@ replace fptime_h=3 if emplst5>1 & emplst5<.
 **--------------------------------------
 * supervis
 
-recode J6 (1=1) (2=0) (999/max=-1), gen(supervis)
+recode j6 (1=1) (2=0) (999/max=-1), gen(supervis)
 	
 	lab val supervis yesno
 	lab var supervis "Supervisory position"
@@ -775,7 +777,7 @@ recode J6 (1=1) (2=0) (999/max=-1), gen(supervis)
 **--------------------------------------
 ** maternity leave  
 **--------------------------------------
-recode J90 (5=1) (1/4 6/16=0) (999/max=-1), gen(mater)
+recode j90 (5=1) (1/4 6/16=0) (999/max=-1), gen(mater)
 	lab val mater yesno
 	lab var mater "maternity leave "
 
@@ -790,7 +792,7 @@ recode J90 (5=1) (1/4 6/16=0) (999/max=-1), gen(mater)
 ** Unempl: registered  
 **--------------------------------------
 * un_reg
-recode J85 (2=0) (999/max=-1), gen(un_reg)
+recode j85 (2=0) (999/max=-1), gen(un_reg)
 
 	lab val un_reg yesno
 	lab var un_reg "Unemployed: registered"
@@ -808,10 +810,10 @@ recode J85 (2=0) (999/max=-1), gen(un_reg)
 * un_act
 
 gen un_act=.
-replace un_act=1 if J1>=4 & J1<999 & J82==1  //NW(or unpaid leave)+actively looking
-replace un_act=0 if J1<=3 | J81==2
-replace un_act=-1 if J1>999 & J81>999
-replace un_act=1 if un_act==0 & J90==8 & J1>=4 & J1<999 // Info from J90
+replace un_act=1 if j1>=4 & j1<999 & j82==1  //NW(or unpaid leave)+actively looking
+replace un_act=0 if j1<=3 | j81==2
+replace un_act=-1 if j1>999 & j81>999
+replace un_act=1 if un_act==0 & j90==8 & j1>=4 & j1<999 // Info from J90
 
 	lab val un_act yesno
 	lab var un_act "Unemployed: actively looking for work "
@@ -826,7 +828,7 @@ replace un_act=1 if un_act==0 & J90==8 & J1>=4 & J1<999 // Info from J90
 **--------------------------------------
 * selfemp v1-v3 	 
 
-recode J90 (10 11=1) (1/9 12/16=0) (999/max=-1), gen(selfemp)	
+recode j90 (10 11=1) (1/9 12/16=0) (999/max=-1), gen(selfemp)	
 				 
 // 	lab val selfemp_v1 selfemp selfemp_v3 yesno
 // 	lab var selfemp_v1 "Self-employed 1: all without Family Business"
@@ -842,8 +844,8 @@ recode J90 (10 11=1) (1/9 12/16=0) (999/max=-1), gen(selfemp)
   is less reliable. Thus, we rely on self-classification. 
 */
 
-recode J90 (11=1) (1/10 12/16=0) (999/max=-1), gen(entrep)	
-recode J90 (10 11=1) (1/9 12/16=0) (999/max=-1), gen(entrep2)	
+recode j90 (11=1) (1/10 12/16=0) (999/max=-1), gen(entrep)	
+recode j90 (10 11=1) (1/9 12/16=0) (999/max=-1), gen(entrep2)	
 
 	lab val entrep entrep2 yesno
 	lab var entrep "Entrepreneur (not farmer; has employees)"
@@ -881,15 +883,15 @@ replace nempl=2 if entrep2==1 & size>=10 & size<.
 -	J74_1A/J74_1C  waves  2005+
 */								  
 gen oldpens=.
-replace oldpens=1 if J74==1 & wavey<=2000
-replace oldpens=1 if J74_1==1 & wavey>=2001 & wavey<=2003
-replace oldpens=1 if (inlist(J74A, 1, 7, 8) | inlist(J74B, 1, 7, 8)) & wavey==2004
-replace oldpens=1 if (inlist(J74_1A, 6, 8, 9, 10, 11) | ///
-	inlist(J74_1B, 6, 8, 9, 10, 11) | inlist(J74_1C, 6, 8, 9, 10, 11)) & wavey>=2005
+replace oldpens=1 if j74==1 & wavey<=2000
+replace oldpens=1 if j74_1==1 & wavey>=2001 & wavey<=2003
+replace oldpens=1 if (inlist(j74a, 1, 7, 8) | inlist(j74b, 1, 7, 8)) & wavey==2004
+replace oldpens=1 if (inlist(j74_1a, 6, 8, 9, 10, 11) | ///
+	inlist(j74_1b, 6, 8, 9, 10, 11) | inlist(j74_1c, 6, 8, 9, 10, 11)) & wavey>=2005
 
-recode oldpens(.=0) if (J74<. | J74_1<. | J74A<. | J74B<. | ///
-						J74_1A<. | J74_1B<. | J74_1C<.)
-recode oldpens(.=0) if J73==2
+recode oldpens(.=0) if (j74<. | j74_1<. | j74a<. | j74b<. | ///
+						j74_1a<. | j74_1b<. | j74_1c<.)
+recode oldpens(.=0) if j73==2
 					  
 	lab var oldpens "Receiving old-age pension"
 	lab val oldpens yesno 
@@ -907,10 +909,10 @@ recode oldpens(.=0) if J73==2
 - Receives pension (old-age)
 - 65+ 
 */
-recode J1 (1/5=0) (999/max=.) , gen(retf)
-replace retf=1 if J1==5	& age>=50 & oldpens==1 	//Receives pension (old-age)
-replace retf=1 if J1==5 & age>=50 & J90==4   //	Self-categorisation as retired & age 50+ 
-replace retf=1 if J1==5 & age>=65	
+recode j1 (1/5=0) (999/max=.) , gen(retf)
+replace retf=1 if j1==5	& age>=50 & oldpens==1 	//Receives pension (old-age)
+replace retf=1 if j1==5 & age>=50 & j90==4   //	Self-categorisation as retired & age 50+ 
+replace retf=1 if j1==5 & age>=65	
    
 	lab var retf "Retired fully (NW, old-age pens)"
 	lab val retf yesno 
@@ -939,15 +941,15 @@ replace retf=1 if J1==5 & age>=65
 // J74_1A/J74_1C ==11 6  - 2005+
 */								  
 gen disabpens=.
-replace disabpens=1 if J74==2 & wavey<=2000
-replace disabpens=1 if J74_2==1 & wavey>=2001 & wavey<=2003
-replace disabpens=1 if (J74A==2 | J74B==2) & wavey==2004
-replace disabpens=1 if (inlist(J74_1A, 1, 2, 3, 4) | ///
-	inlist(J74_1B, 1, 2, 3, 4) | inlist(J74_1C, 1, 2, 3, 4)) & wavey>=2005
+replace disabpens=1 if j74==2 & wavey<=2000
+replace disabpens=1 if j74_2==1 & wavey>=2001 & wavey<=2003
+replace disabpens=1 if (j74a==2 | j74b==2) & wavey==2004
+replace disabpens=1 if (inlist(j74_1a, 1, 2, 3, 4) | ///
+	inlist(j74_1b, 1, 2, 3, 4) | inlist(j74_1c, 1, 2, 3, 4)) & wavey>=2005
 
-recode disabpens(.=0) if (J74<. | J74_1<. | J74A<. | J74B<. | ///
-						J74_1A<. | J74_1B<. | J74_1C<.)
-recode disabpens(.=0) if J73==2
+recode disabpens(.=0) if (j74<. | j74_1<. | j74a<. | j74b<. | ///
+						j74_1a<. | j74_1b<. | j74_1c<.)
+recode disabpens(.=0) if j73==2
 					  
 	lab var disabpens "Receiving disability pension"
 	lab val disabpens yesno 
@@ -983,17 +985,17 @@ recode disabpens(.=0) if J73==2
 - inconsistency across waves, jumps from wave to wave
 */
 gen exp=.
-replace exp=J79				if wavey <=2003 | wavey==2006
-replace exp=J161 			if wavey==2004
-replace exp=J161_1Y ///
-	if inlist(wavey,2005,2007, 2006, 2007, 2008, 2010, 2011, 2012) & J161_2Y>999
-replace exp=J161_2Y ///
-	if inlist(wavey,2005,2007, 2006, 2007, 2008, 2010, 2011, 2012) & J161_1Y>999	
-replace exp=J161_1Y+J161_2Y ///
+replace exp=j79				if wavey <=2003 | wavey==2006
+replace exp=j161 			if wavey==2004
+replace exp=j161_1y ///
+	if inlist(wavey,2005,2007, 2006, 2007, 2008, 2010, 2011, 2012) & j161_2y>999
+replace exp=j161_2y ///
+	if inlist(wavey,2005,2007, 2006, 2007, 2008, 2010, 2011, 2012) & j161_1y>999	
+replace exp=j161_1y+j161_2y ///
 	if inlist(wavey,2005,2007, 2006, 2007, 2008, 2010, 2011, 2012) ///
-	& J161_1Y<999 & J161_2Y<999		
-replace exp=J79A 			if wavey==2009
-replace exp=J161_3Y			if wavey>=2013
+	& j161_1y<999 & j161_2y<999		
+replace exp=j79a 			if wavey==2009
+replace exp=j161_3y			if wavey>=2013
 
 recode exp (999/max=-1)
 
@@ -1009,7 +1011,7 @@ recode exp (999/max=-1)
 * exporg
 * J5A 
 	
-gen exporg=intyear-J5A if J5A <9999 & J5A<=intyear
+gen exporg=intyear-j5a if j5a <9999 & j5a<=intyear
 	
 	lab var exporg "Experience in organisation"
 
@@ -1018,7 +1020,7 @@ gen exporg=intyear-J5A if J5A <9999 & J5A<=intyear
 **   Never worked
 **--------------------------------------	
 *neverw
-recode J78 (2=1) (1=0) (999/max=-1), gen(neverw)
+recode j78 (2=1) (1=0) (999/max=-1), gen(neverw)
 replace neverw=0 if work_d==1
 	lab var neverw "Never worked"
 	lab val neverw yesno
@@ -1036,7 +1038,7 @@ replace neverw=0 if work_d==1
 
 * whole income (jobs, benefits)
 
-clonevar inctot_mn=J60
+clonevar inctot_mn=j60
 recode inctot_mn (99999990/max=-1)
 
 // 	lab var inctot_yn "Individual Income (All types, year, net)"
@@ -1045,8 +1047,8 @@ recode inctot_mn (99999990/max=-1)
 
 	
 * all jobs 
-clonevar incjobs_mn=J10
-replace incjobs_mn=incjobs_mn + J40 if J40<99999996
+clonevar incjobs_mn=j10
+replace incjobs_mn=incjobs_mn + j40 if j40<99999996
 recode incjobs_mn (99999990/max=-1)
 
 // 	lab var incjobs_yn "Individual Labor Earnings (All jobs, year, net)"
@@ -1055,7 +1057,7 @@ recode incjobs_mn (99999990/max=-1)
 
 
 * main job
-clonevar incjob1_mn=J10
+clonevar incjob1_mn=j10
 recode incjob1_mn (99999990/max=-1)
 
 // 	lab var incjob1_yg  "Salary from main job (year, gross)"
@@ -1072,7 +1074,7 @@ recode incjob1_mn (99999990/max=-1)
 * hhinc_pre
 * hhinc_post - //better indicator
 
-clonevar hhinc_post=F14
+clonevar hhinc_post=f14
 recode hhinc_post (99999990/max=-1)
 
 //  	lab var hhinc_pre "HH income(month, pre)"	
@@ -1083,7 +1085,7 @@ recode hhinc_post (99999990/max=-1)
 **   Income - subjective 
 **--------------------------------------
 * incsubj9
-recode J62 (999/max=-1), gen(incsubj9)
+recode j62 (999/max=-1), gen(incsubj9)
 
 	lab var incsubj9 "Income: subjective rank [9]"
 	lab def incsubj9 1 "Lo step" 9 "Hi step" 
@@ -1101,7 +1103,7 @@ recode J62 (999/max=-1), gen(incsubj9)
 **  Self-rated health 
 **--------------------------------------
 * srh
-recode M3   (999/max=-1) , gen(srh5)
+recode m3   (999/max=-1) , gen(srh5)
 
 	lab var srh5 "Self-rated health"
 	lab def srh5 5 "Very bad" 4 "Bad" 3 "Satisfactory" 2 "Good" 1 "Very good"
@@ -1113,9 +1115,9 @@ recode M3   (999/max=-1) , gen(srh5)
 **  Disability 
 **--------------------------------------
 *  
-recode M20_7 (1=1) (2 5=0) (999/max=-1) , gen(disab)
+recode m20_7 (1=1) (2 5=0) (999/max=-1) , gen(disab)
 gen disab2c=disab
-replace disab2c=0 if M20_8==1 | (M20_8>999 & M20_8<.)
+replace disab2c=0 if m20_8==1 | (m20_8>999 & m20_8<.)
 	
 	lab var disab	"Disability (any)"
 	lab var disab2c "Disability (min. category 2 or >30%)"
@@ -1156,7 +1158,7 @@ replace disab2c=0 if M20_8==1 | (M20_8>999 & M20_8<.)
  	
 
 * Recode into 5-point (original) and 10-point versions 
- tokenize "J1_1_1 J1_1_3 J65 J66_1"
+ tokenize "j1_1_1 j1_1_3 j65 j66_1"
 	 foreach var in satwork satinc satlife satfinhh {
 		 recode  `1' (1=5)  (2=4) (3=3) (4=2) (5=1) (999/max=-1), gen(`var'5)
 		 recode  `1' (1=10) (2=7) (3=5) (4=3) (5=0) (999/max=-1), gen(`var'10)
@@ -1182,15 +1184,15 @@ replace disab2c=0 if M20_8==1 | (M20_8>999 & M20_8<.)
 // J72_111 J72_110- last 2 years
 // Note, we include 1995-2000 , but it refers to the last 2 years
 
-recode J72_11 (1=1) (2=0) (999/max=-2), gen(train) // for 2001+
+recode j72_11 (1=1) (2=0) (999/max=-2), gen(train) // for 2001+
 
-replace train=1 if J72_111==1 & wavey==2000 // for 2000 (last 2y) 
-replace train=0 if J72_111==2 & wavey==2000
-replace train=-2 if J72_111>999 & J72_111<. & wavey==2000
+replace train=1 if j72_111==1 & wavey==2000 // for 2000 (last 2y) 
+replace train=0 if j72_111==2 & wavey==2000
+replace train=-2 if j72_111>999 & j72_111<. & wavey==2000
 
-replace train=1 if J72_110==1 & wavey<2000 // for 95 96 98 (last 2y) 
-replace train=0 if J72_110==2 & wavey<2000
-replace train=-2 if J72_110>999 & J72_110<. & wavey<2000
+replace train=1 if j72_110==1 & wavey<2000 // for 95 96 98 (last 2y) 
+replace train=0 if j72_110==2 & wavey<2000
+replace train=-2 if j72_110>999 & j72_110<. & wavey<2000
 
 	lab val train yesno
 	lab var train "Training (previous year)"
@@ -1205,7 +1207,7 @@ replace train=-2 if J72_110>999 & J72_110<. & wavey<2000
 - J4_3 - less MV, asked in 2008-2010
 - J72_26 - more accurate, but also 2008-2010
 */
-recode J72_26 (1 2=1)  (3=0) (999/max=-2) (.=-1), gen(eduwork)
+recode j72_26 (1 2=1)  (3=0) (999/max=-2) (.=-1), gen(eduwork)
 	* Alternative variable:
 // 		recode J4_3 (1 2=1) (3 4=0) (999/max=-2) (.=-1), gen(eduwork)
 
@@ -1222,8 +1224,8 @@ recode J72_26 (1 2=1)  (3=0) (999/max=-2) (.=-1), gen(eduwork)
 **--------------------------------------
 * NOTE:
 
-recode J31 (1 2=1)(3 4 5=0) (999/max=-2) (.=-1), gen(jsecu)
-recode J31 (1 2=1)(4 5=0)(3=2)  (999/max=-2) (.=-1), gen(jsecu2)
+recode j31 (1 2=1)(3 4 5=0) (999/max=-2) (.=-1), gen(jsecu)
+recode j31 (1 2=1)(4 5=0)(3=2)  (999/max=-2) (.=-1), gen(jsecu2)
 
 
 	lab def jsecu 	 1 "Insecure" 0 "Secure"  ///
@@ -1291,14 +1293,14 @@ iscogen mps88 = mps(isco88_4) , from(isco88)
 *** Father 
 
 *edu3
-capture recode J217A (1/5 12=1) (6/7=2) (8/11=3) (999/max =-1) , gen(fedu3)
+capture recode j217a (1/5 12=1) (6/7=2) (8/11=3) (999/max =-1) , gen(fedu3)
 
 	lab val fedu3 edu3
 	lab var fedu3 "Father's education: 3 levels"
 
 	
 * edu4
-capture recode J217A (1/3 12=1)(4/5=2)(6/7=3)(8/11=4) (999/max=-1), gen(fedu4)
+capture recode j217a (1/3 12=1)(4/5=2)(6/7=3)(8/11=4) (999/max=-1), gen(fedu4)
 
 	lab val fedu4 edu4
 	lab var fedu4 "Father's education: 4 levels"
@@ -1306,14 +1308,14 @@ capture recode J217A (1/3 12=1)(4/5=2)(6/7=3)(8/11=4) (999/max=-1), gen(fedu4)
 
 *** Mother 
 *edu3
-capture recode J217B (1/5 12=1)(6/7=2)(8/11=3) (999/max=-1), gen(medu3)
+capture recode j217b (1/5 12=1)(6/7=2)(8/11=3) (999/max=-1), gen(medu3)
 
 	lab val medu3 edu3
 	lab var medu3 "Mother's education: 3 levels"
 
 	
 * edu4
-capture recode J217B (1/3 12=1)(4/5=2)(6/7=3)(8/11=4) (999/max=-1), gen(medu4)
+capture recode j217b (1/3 12=1)(4/5=2)(6/7=3)(8/11=4) (999/max=-1), gen(medu4)
 
 	lab val medu4 edu4
 	lab var medu4 "Mother's education: 4 levels"
@@ -1344,9 +1346,9 @@ lab def migr ///
 -3 "Does not apply" -8 "Question not asked in survey"
 
 gen migr=. 
-replace migr=0 if I2==1 //Russia
-replace migr=0 if I1==2 //Born in same place as current residence
-replace migr=1 if inrange(I2, 2, 16) //Foreign
+replace migr=0 if i2==1 //Russia
+replace migr=0 if i1==2 //Born in same place as current residence
+replace migr=1 if inrange(i2, 2, 16) //Foreign
 
 *fill MV / correct inconsistent responses
 	bysort pid: egen temp_migr=mode(migr), maxmode // identify most common response
@@ -1354,8 +1356,8 @@ replace migr=1 if inrange(I2, 2, 16) //Foreign
 	replace migr=temp_migr if migr!=temp_migr // correct a few inconsistent cases
 
 *specify some missing values
-replace migr=-1 if migr==. & (I2==99999997 | I2==99999998) //DK/Refusal
-replace migr=-2 if migr==. & I2==99999999
+replace migr=-1 if migr==. & (i2==99999997 | i2==99999998) //DK/Refusal
+replace migr=-2 if migr==. & i2==99999999
 
 lab val migr migr
 	
@@ -1366,7 +1368,7 @@ lab val migr migr
 
 *NOTE: only broad region available if respondent not born in Russia
 
-label define COB ///
+label define cob ///
 0 "Born in Survey-Country" ///
 1 "Oceania and Antarctica" ///
 2 "North-West Europe" ///
@@ -1382,14 +1384,14 @@ label define COB ///
 -3 "Does not apply" -8 "Question not asked in survey"
 
 gen cob_r=.
-replace cob_r=0 if (I2==1 | I1==2) //Russia
-replace cob_r=3 if I2==2 //Ukraine
-replace cob_r=3 if I2==3 //Belarus
-replace cob_r=7 if inrange(I2, 4, 8)
-replace cob_r=3 if inrange(I2, 9, 11)
-replace cob_r=7 if inrange(I2, 12, 14)
-replace cob_r=3 if I2==15 //Estonia
-replace cob_r=10 if I2==16 //Other
+replace cob_r=0 if (i2==1 | i1==2) //Russia
+replace cob_r=3 if i2==2 //Ukraine
+replace cob_r=3 if i2==3 //Belarus
+replace cob_r=7 if inrange(i2, 4, 8)
+replace cob_r=3 if inrange(i2, 9, 11)
+replace cob_r=7 if inrange(i2, 12, 14)
+replace cob_r=3 if i2==15 //Estonia
+replace cob_r=10 if i2==16 //Other
 replace cob_r=0 if cob_r==. & migr==0 //Born in place of current residence (=Russia)
 replace cob_r=10 if cob_r==. & migr==1 
 
@@ -1424,13 +1426,13 @@ sort pid wave
 	rename cob_r cob
 
 	*specify MV
-	replace cob=-1 if cob==. & (I2==99999997 | I2==99999998) //DK/Refusal 
-	replace cob=-2 if cob==. & I2==99999999 //non-response
+	replace cob=-1 if cob==. & (i2==99999997 | i2==99999998) //DK/Refusal 
+	replace cob=-2 if cob==. & i2==99999999 //non-response
 	
 	*correct a few migr values based on cob
 	replace migr=0 if cob==0
 	
-lab val cob COB	
+lab val cob cob	
 
 **--------------------------------------
 **   Migration Background (parents)
@@ -1498,21 +1500,21 @@ lab def relig ///
 -8 "Question not asked in survey"
 
 gen relig=1
-replace relig=0 if J72_19==99999996 //No religion
-replace relig=0 if J72_19==13 //
-replace relig=0 if J72_19==21 //
-replace relig=0 if J72_19==23 //
-replace relig=0 if J72_19==37 //
-replace relig=0 if J72_19==38 //
-replace relig=0 if J72_19==48 //
-replace relig=0 if J72_19==51 //
-replace relig=0 if J72_19==59 //
-replace relig=0 if J72_19==71 //
-replace relig=0 if J72_19==88 //
-replace relig=-1 if J72_19==99999997 //DK
-replace relig=-1 if J72_19==99999998 //refusal
-replace relig=-2 if J72_19==99999999 //No answer
-replace relig=. if J72_19==.
+replace relig=0 if j72_19==99999996 //No religion
+replace relig=0 if j72_19==13 //
+replace relig=0 if j72_19==21 //
+replace relig=0 if j72_19==23 //
+replace relig=0 if j72_19==37 //
+replace relig=0 if j72_19==38 //
+replace relig=0 if j72_19==48 //
+replace relig=0 if j72_19==51 //
+replace relig=0 if j72_19==59 //
+replace relig=0 if j72_19==71 //
+replace relig=0 if j72_19==88 //
+replace relig=-1 if j72_19==99999997 //DK
+replace relig=-1 if j72_19==99999998 //refusal
+replace relig=-2 if j72_19==99999999 //No answer
+replace relig=. if j72_19==.
 
 replace relig=-8 if inrange(wavey, 1994, 1998)
 replace relig=-8 if inrange(wavey, 2004, 2010)
@@ -1534,7 +1536,7 @@ lab def attendance ///
 -3 "Does not apply" ///
 -8 "Question not asked in survey"
 
-recode J131_1 (1/2=1) (3/4=2) (5/6=3) (7=4) (99999997/99999998=-1) (99999999=-2), gen(relig_att)
+recode j131_1 (1/2=1) (3/4=2) (5/6=3) (7=4) (99999997/99999998=-1) (99999999=-2), gen(relig_att)
 
 *specify for years when not asked (i.e. prior to 2016)
 replace relig_att=-8 if wavey<=2015
@@ -1552,7 +1554,7 @@ lab val relig_att attendance
 **   Cross-sectional sample weight
 **--------------------------------------	
 
-gen wtcs= INWGT
+gen wtcs= inwgt
  
   
 **--------------------------------------
@@ -1571,7 +1573,7 @@ gen wtcs= INWGT
 **   Sample identifier
 **--------------------------------------	
 
-clonevar sampid_rlms  =   ORIGSM
+clonevar sampid_rlms  =   origsm
 lab var sampid_rlms  "Sample identifier: RLMS"
 
  
@@ -1580,16 +1582,16 @@ lab var sampid_rlms  "Sample identifier: RLMS"
 **|=========================================================================|
 
 keep			///
-wave pid country  intyear intmonth wtcs INWGT  age place  isco*  		///
+wave pid country  intyear intmonth wtcs inwgt  age place  isco*  		///
 marstat* parstat* mlstat* livpart nvmarr				///
 edu3 edu4 edu5 indust*  wavey	wave1st	respstat					///
 sat* size* inc* entrep*  train* exp* superv*				///
 kid* yborn female nphh work_d empls* public 			///
 whday whweek whmonth fptime* mater un_* oldpens retf* disabpens 	///
 neverw hhinc* srh* disab* eduwork*	jsecu*					///
-H7_1 H7_2 			/// day month interv 
-J1_1_2 J1_1_4 J1_1_6 J1_1_7 J1_1_8 J1_1_9 /// jo quality / sat
-ID_H				/// hh num
+h7_1 h7_2 			/// day month interv 
+j1_1_2 j1_1_4 j1_1_6 j1_1_7 j1_1_8 j1_1_9 /// jo quality / sat
+id_h				/// hh num
 migr* cob*   relig* /// 
 wtcs isei* siops* mps* nempl selfemp*	///
 widow divor separ fedu* medu*   sampid* ///
