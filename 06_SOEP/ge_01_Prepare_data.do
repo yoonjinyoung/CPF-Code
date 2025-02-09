@@ -77,10 +77,10 @@ pgisced11 pgisced97 pgcasmin  	/// Educ
 /// *** Extra - to consider 
 pgisei88 pgmps92 pgsiops88 pgegp88	///SES indices ?
 pgerljob 				/// Activity in the learned profession
-pgmonth   pgpartnr	/// pgpartz less accurate that partner from ppath
+imonth   pgpartnr	/// pgpartz less accurate that partner from ppath
 pgfamstd
 
- 
+gen pgmonth=imonth
 
 *
 sort  pid syear
@@ -149,6 +149,11 @@ save "${soep_out_work}/gpequiv_1.dta", replace
 *#							#
 *############################
 use "${soep_in}/pl.dta", clear
+
+gen  plb0193=plb0193_v1 
+replace  plb0193=plb0193_v2 if syear==2022 & plb0193_v1 ~= -5
+
+
 *
 keep	pid hid syear			///
 /// SAT
@@ -193,7 +198,7 @@ plh0258_h pli0098_h		// Religion
 *
 sort  pid syear
 *
- 
+
 save "${soep_out_work}/gpl_1.dta", replace  
 
 
@@ -203,6 +208,9 @@ save "${soep_out_work}/gpl_1.dta", replace
 *#							#
 *############################
 use "${soep_in}/pkal.dta", clear
+
+gen kal2d01=kal2d01_v1
+replace kal2d01=kal2d01_v2 if syear==2021 | syear==2022
 
 keep 					///	INFO abour last year
 pid hid syear 			///
